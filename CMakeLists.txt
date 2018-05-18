@@ -58,16 +58,18 @@ add_dependencies(snappy snappy-project)
 ExternalProject_Add(gperftools
   GIT_REPOSITORY https://github.com/gperftools/gperftools.git
   GIT_TAG gperftools-2.7
-  UPDATE_COMMAND autoreconf --install
-  CONFIGURE_COMMAND <SOURCE_DIR>/configure
-    --prefix=${MAIN_INSTALL_DIR}
-    --disable-heap-checker
-    --disable-heap-profiler
-    --disable-dependency-tracking
-    --disable-debugalloc
-    --disable-cpu-profiler
-    --disable-shared
-    --with-pic
+  CONFIGURE_COMMAND
+    autoreconf --install <SOURCE_DIR>
+  COMMAND
+    <SOURCE_DIR>/configure
+      --prefix=${MAIN_INSTALL_DIR}
+      --disable-heap-checker
+      --disable-heap-profiler
+      --disable-dependency-tracking
+      --disable-debugalloc
+      --disable-cpu-profiler
+      --disable-shared
+      --with-pic
   BUILD_COMMAND make
   INSTALL_COMMAND make install
 )
