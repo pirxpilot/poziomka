@@ -1,1 +1,3 @@
-module.exports = require('./lib/poziomka');
+const { Poziomka } = require('bindings')('poziomka');
+
+module.exports = Poziomka;
