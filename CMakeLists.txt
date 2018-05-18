@@ -5,12 +5,9 @@ include(ExternalProject)
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
-# crc32c
+set(MAIN_INSTALL_DIR ${PROJECT_BINARY_DIR}/install)
 
-# set(CRC32C_BUILD_TESTS OFF CACHE BOOL "Build CRC32C's unit tests")
-# set(CRC32C_BUILD_BENCHMARKS OFF CACHE BOOL "Build CRC32C's benchmarks")
-# set(CRC32C_USE_GLOG OFF CACHE BOOL "Build CRC32C's tests with Google Logging")
-# set(CRC32C_INSTALL OFF CACHE BOOL "Install CRC32C's header and library")
+# crc32c
 
 # set(HAVE_CRC32C ON CACHE BOOL "CRC32C is build here")
 
@@ -18,34 +15,42 @@ project(poziomka)
 # set_target_properties(crc32c_sse42 PROPERTIES COMPILE_FLAGS "-fPIC -fno-builtin-memcmp")
 # set_target_properties(crc32c_arm64 PROPERTIES COMPILE_FLAGS "-fPIC -fno-builtin-memcmp")
 
-# ExternalProject_Add(crc32c
-#   GIT_REPOSITORY https://github.com/google/crc32c
-#   GIT_TAG 1.0.5
-#   CMAKE_CACHE_ARGS
-#     -DCRC32C_BUILD_TESTS:STRING=OFF
-#     -DCRC32C_BUILD_BENCHMARKS:STRING=OFF
-#     -DCRC32C_USE_GLOG:STRING=OFF
-# )
+ExternalProject_Add(crc32c-project
+  GIT_REPOSITORY https://github.com/google/crc32c
+  GIT_TAG 1.0.5
+  CMAKE_CACHE_ARGS
+    -DCMAKE_INSTALL_PREFIX:STRING=${MAIN_INSTALL_DIR}
+    -DCRC32C_BUILD_TESTS:BOOL=OFF
+    -DCRC32C_BUILD_BENCHMARKS:BOOL=OFF
+    -DCRC32C_USE_GLOG:BOOL=OFF
+)
 
 # ExternalProject_Get_Property(crc32c INSTALL_DIR)
 
-# add_library(tcmalloc STATIC IMPORTED)
-# set_property(TARGET tcmalloc PROPERTY IMPORTED_LOCATION ${INSTALL_DIR}/lib/libtcmalloc_minimal.a)
+add_library(crc32c STATIC IMPORTED)
+set_property(TARGET crc32c PROPERTY IMPORTED_LOCATION ${MAIN_INSTALL_DIR}/lib/libcrc32c.a)
 
-# add_dependencies(tcmalloc gperftools)
+add_dependencies(crc32c crc32c-project)
 
 # snappy
 
-# set(SNAPPY_BUILD_TESTS CACHE BOOL "Don not Build Snappy's own tests.")
-
 # set(HAVE_SNAPPY ON CACHE BOOL "snappy is build also")
 
-# ExternalProject_Add(snappy
-#   GIT_REPOSITORY https://github.com/google/snappy
-#   GIT_TAG 1.1.7
-# )
+ExternalProject_Add(snappy-project
+  GIT_REPOSITORY https://github.com/google/snappy
+  GIT_TAG 1.1.7
+  CMAKE_CACHE_ARGS
+    -DCMAKE_INSTALL_PREFIX:STRING=${MAIN_INSTALL_DIR}
+    -DCRC32C_BUILD_TESTS:BOOL=OFF
+)
 
 # set_target_properties(snappy PROPERTIES COMPILE_FLAGS "-fPIC -fno-builtin-memcmp")
+
+add_library(snappy STATIC IMPORTED)
+set_property(TARGET snappy PROPERTY IMPORTED_LOCATION ${MAIN_INSTALL_DIR}/lib/libsnappy.a)
+
+add_dependencies(snappy snappy-project)
+
 
 # tcmalloc
 
@@ -55,7 +60,7 @@ ExternalProject_Add(gperftools
   GIT_TAG gperftools-2.7
   UPDATE_COMMAND autoreconf --install
   CONFIGURE_COMMAND <SOURCE_DIR>/configure
-    --prefix=${PROJECT_BINARY_DIR}/install
+    --prefix=${MAIN_INSTALL_DIR}
     --disable-heap-checker
     --disable-heap-profiler
     --disable-dependency-tracking
@@ -70,7 +75,7 @@ ExternalProject_Add(gperftools
 ExternalProject_Get_Property(gperftools INSTALL_DIR)
 
 add_library(tcmalloc STATIC IMPORTED)
-set_property(TARGET tcmalloc PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/install/lib/libtcmalloc_minimal.a)
+set_property(TARGET tcmalloc PROPERTY IMPORTED_LOCATION ${MAIN_INSTALL_DIR}/lib/libtcmalloc_minimal.a)
 
 add_dependencies(tcmalloc gperftools)
 
@@ -79,9 +84,8 @@ add_dependencies(tcmalloc gperftools)
 
 # leveldb
 
-set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "do not build benchmarks")
-set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "do not build benchmarks")
-set(LEVELDB_INSTALL OFF CACHE BOOL "do not install")
+# set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "do not build benchmarks")
+# set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "do not build benchmarks")
 
 #    -DHAVE_TCMALLOC:STRING=ON
 
@@ -90,16 +94,19 @@ set(LEVELDB_INSTALL OFF CACHE BOOL "do not install")
 ExternalProject_Add(leveldb-project
   GIT_REPOSITORY https://github.com/google/leveldb
   CMAKE_CACHE_ARGS
-    -DCMAKE_PREFIX_PATH:STRING=${PROJECT_BINARY_DIR}/install
-    -DCMAKE_INSTALL_PREFIX:STRING=${PROJECT_BINARY_DIR}/install
-    -DLEVELDB_BUILD_TESTS:STRING=OFF
-    -DLEVELDB_BUILD_BENCHMARKS:STRING=OFF
+    -DCMAKE_INSTALL_PREFIX:STRING=${MAIN_INSTALL_DIR}
+    -DLEVELDB_BUILD_TESTS:BOOL=OFF
+    -DLEVELDB_BUILD_BENCHMARKS:BOOL=OFF
+  DEPENDS
+    crc32c-project
+    snappy-project
+    gperftools
 )
 
 ExternalProject_Get_Property(leveldb-project INSTALL_DIR)
 
 add_library(leveldb STATIC IMPORTED)
-set_property(TARGET leveldb PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/install/lib/libleveldb.a)
+set_property(TARGET leveldb PROPERTY IMPORTED_LOCATION ${MAIN_INSTALL_DIR}/lib/libleveldb.a)
 
 add_dependencies(leveldb leveldb-project)
 
@@ -133,7 +140,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 target_link_libraries(
   ${PROJECT_NAME}
   ${CMAKE_JS_LIB}
-  # crc32c
-  # snappy
+  tcmalloc
+  crc32c
+  snappy
   leveldb
 )
