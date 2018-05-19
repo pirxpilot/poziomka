@@ -25,10 +25,13 @@
     "tmp": "^0.0.33"
   },
   "scripts": {
+    "install": "cmake-js build",
     "test": "make check"
   },
   "files": [
     "index.js",
-    "lib"
+    "CMakeLists.txt",
+    "src",
+    "deps"
   ]
 }

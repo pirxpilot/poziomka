@@ -1,0 +1,11 @@
+# .git and other config files
+**/.*
+
+# all test files
+**/*_test.cc
+**/*_unittest.cc
+**/*_unittest.h
+snappy/testdata
+
+# docs
+*/doc
