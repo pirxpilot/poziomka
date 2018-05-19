@@ -1,4 +1,5 @@
 PROJECT=poziomka
+ADDON=build/Release/$(PROJECT).node
 
 CC_SRC=$(wildcard src/*.h src/*.cc)
 
@@ -10,10 +11,10 @@ lint:
 test: addon
 	./node_modules/.bin/mocha --recursive --require should
 
-build/Release/leveldown.node: $(CC_SRC) CMakeLists.txt
+$(ADDON): $(CC_SRC) CMakeLists.txt
 	./node_modules/.bin/cmake-js build
 
-addon: build/Release/leveldown.node
+addon: $(ADDON)
 
 clean:
 	rm -rf build
