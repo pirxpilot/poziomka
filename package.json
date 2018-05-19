@@ -7,7 +7,10 @@
     "email": "pirxpilot@furkot.com",
     "url": "https://pirxpilot.me"
   },
-  "repository": "pirxpilot/poziomka",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pirxpilot/poziomka.git"
+  },
   "license": "MIT",
   "keywords": [
     "poziomka",
@@ -16,7 +19,8 @@
   "dependencies": {
     "@pirxpilot/cmake-js": "^4.0.1",
     "bindings": "^1.3.0",
-    "node-addon-api": "^1.3.0"
+    "node-addon-api": "^1.3.0",
+    "prebuild-install": "^4.0.0"
   },
   "devDependencies": {
     "jshint": "~2",
@@ -25,7 +29,8 @@
     "tmp": "^0.0.33"
   },
   "scripts": {
-    "install": "cmake-js build",
+    "install": "prebuild-install || cmake-js build",
+    "prebuild": "prebuild --backend cmake-js -t 10.0.0 --strip",
     "test": "make check"
   },
   "files": [
