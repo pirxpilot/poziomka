@@ -34,7 +34,7 @@ void GetWorker::Execute() {
 }
 
 void GetWorker::OnOK() {
-  Napi::Env env = Env();
+  auto env = Env();
 
   auto results = Napi::Array::New(env, values.size());
   for (int i = 0; i < values.size(); i++) {

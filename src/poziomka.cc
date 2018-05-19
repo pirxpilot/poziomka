@@ -4,18 +4,15 @@
 
 #include "workers.h"
 
-using namespace Napi;
-
 static inline leveldb::Slice MakeSlice(Napi::Value from) {
   if (from.IsNull() || from.IsUndefined()) return leveldb::Slice();
 
-  // auto buffer = from.ToObject().As<Napi::Buffer<char>>()
   auto buffer = from.As<Napi::Buffer<char>>();
   return leveldb::Slice(buffer.Data(), buffer.Length());
 }
 
 Poziomka::Poziomka(const Napi::CallbackInfo& info) : ObjectWrap(info) {
-  Napi::Env env = info.Env();
+  auto env = info.Env();
 
   if (info.Length() < 1) {
     Napi::TypeError::New(env, "Wrong number of arguments")
@@ -34,13 +31,13 @@ Poziomka::Poziomka(const Napi::CallbackInfo& info) : ObjectWrap(info) {
 }
 
 Napi::Value Poziomka::Open(const Napi::CallbackInfo& info) {
-  Napi::Function fn = info[0].As<Napi::Function>();
+  auto fn = info[0].As<Napi::Function>();
 
   (new OpenWorker(fn, *this))->Queue();
 }
 
 Napi::Value Poziomka::Close(const Napi::CallbackInfo& info) {
-  Napi::Function fn = info[0].As<Napi::Function>();
+  auto fn = info[0].As<Napi::Function>();
 
   (new CloseWorker(fn, *this))->Queue();
 }
@@ -107,7 +104,7 @@ Napi::Function Poziomka::GetClass(Napi::Env env) {
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  Napi::String name = Napi::String::New(env, "Poziomka");
+  auto name = Napi::String::New(env, "Poziomka");
   exports.Set(name, Poziomka::GetClass(env));
   return exports;
 }
