@@ -16,7 +16,10 @@ $(ADDON): $(CC_SRC) CMakeLists.txt
 
 addon: $(ADDON)
 
+prebuild:
+	prebuild --backend cmake-js -t 8.11.2 -t 10.0.0 --strip
+
 clean:
 	rm -rf build
 
-.PHONY: check lint test addon clean
+.PHONY: check lint test addon clean prebuild

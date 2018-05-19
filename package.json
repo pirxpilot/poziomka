@@ -30,7 +30,7 @@
   },
   "scripts": {
     "install": "prebuild-install || cmake-js build",
-    "prebuild": "prebuild --backend cmake-js -t 10.0.0 --strip",
+    "prebuild": "make prebuild",
     "test": "make check"
   },
   "files": [
