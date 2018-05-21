@@ -1,6 +1,6 @@
 {
   "name": "poziomka",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fast and opinionated leveldb interface.",
   "author": {
     "name": "Damian Krzeminski",
