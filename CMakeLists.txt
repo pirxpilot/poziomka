@@ -6,10 +6,7 @@ project(poziomka)
 set(DEPS_COMPILE_FLAGS "-fPIC -fno-builtin-memcmp")
 
 add_library(${PROJECT_NAME} SHARED)
-target_include_directories(${PROJECT_NAME}
-  PRIVATE
-    "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api"
-)
+
 target_sources(${PROJECT_NAME}
   PRIVATE
     "${PROJECT_SOURCE_DIR}/src/poziomka.cc"
