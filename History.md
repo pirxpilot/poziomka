@@ -1,4 +1,10 @@
 
+0.0.4 / 2018-05-22
+==================
+
+ * fix builds performed when installed as dependency
+ * fix compilation errors for clang
+
 0.0.3 / 2018-05-20
 ==================
 
