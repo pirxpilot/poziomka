@@ -30,19 +30,19 @@ Poziomka::Poziomka(const Napi::CallbackInfo& info) : ObjectWrap(info) {
   location = info[0].As<Napi::String>().Utf8Value();
 }
 
-Napi::Value Poziomka::Open(const Napi::CallbackInfo& info) {
+void Poziomka::Open(const Napi::CallbackInfo& info) {
   auto fn = info[0].As<Napi::Function>();
 
   (new OpenWorker(fn, *this))->Queue();
 }
 
-Napi::Value Poziomka::Close(const Napi::CallbackInfo& info) {
+void Poziomka::Close(const Napi::CallbackInfo& info) {
   auto fn = info[0].As<Napi::Function>();
 
   (new CloseWorker(fn, *this))->Queue();
 }
 
-Napi::Value Poziomka::GetMany(const Napi::CallbackInfo& info) {
+void Poziomka::GetMany(const Napi::CallbackInfo& info) {
   auto keys = info[0].As<Napi::Array>();
   auto fn = info[1].As<Napi::Function>();
 
@@ -59,7 +59,7 @@ Napi::Value Poziomka::GetMany(const Napi::CallbackInfo& info) {
   (new GetWorker(fn, *db, std::move(slices)))->Queue();
 }
 
-Napi::Value Poziomka::PutMany(const Napi::CallbackInfo& info) {
+void Poziomka::PutMany(const Napi::CallbackInfo& info) {
   auto keys = info[0].As<Napi::Array>();
   auto values = info[1].As<Napi::Array>();
   auto fn = info[2].As<Napi::Function>();
@@ -77,7 +77,7 @@ Napi::Value Poziomka::PutMany(const Napi::CallbackInfo& info) {
   (new BatchWorker(fn, *db, batch))->Queue();
 }
 
-Napi::Value Poziomka::RemoveMany(const Napi::CallbackInfo& info) {
+void Poziomka::RemoveMany(const Napi::CallbackInfo& info) {
   auto keys = info[0].As<Napi::Array>();
   auto fn = info[1].As<Napi::Function>();
 

@@ -11,11 +11,11 @@ class Poziomka : public Napi::ObjectWrap<Poziomka>
 {
 public:
   Poziomka(const Napi::CallbackInfo&);
-  Napi::Value Open(const Napi::CallbackInfo&);
-  Napi::Value Close(const Napi::CallbackInfo&);
-  Napi::Value GetMany(const Napi::CallbackInfo&);
-  Napi::Value PutMany(const Napi::CallbackInfo&);
-  Napi::Value RemoveMany(const Napi::CallbackInfo&);
+  void Open(const Napi::CallbackInfo&);
+  void Close(const Napi::CallbackInfo&);
+  void GetMany(const Napi::CallbackInfo&);
+  void PutMany(const Napi::CallbackInfo&);
+  void RemoveMany(const Napi::CallbackInfo&);
 
   static Napi::Function GetClass(Napi::Env);
 
