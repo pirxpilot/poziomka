@@ -1,4 +1,11 @@
 
+0.0.5 / 2018-05-23
+==================
+
+ * add Slice struct to simplify conversion from Napi value to leveldb value
+ * CMake - improve handling compiler flags
+ * remove node-gyp-build dependency
+
 0.0.4 / 2018-05-22
 ==================
 
