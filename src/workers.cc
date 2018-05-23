@@ -4,6 +4,7 @@
 #include "workers.h"
 
 #include "poziomka.h"
+#include "slice.h"
 
 void OpenWorker::Execute() {
   auto status = poziomka.OpenDatabase();

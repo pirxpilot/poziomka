@@ -3,16 +3,17 @@
 #include <memory>
 
 #include <napi.h>
-
 #include <leveldb/options.h>
 
 class Poziomka;
+class Slice;
 
 namespace leveldb {
   class DB;
   class Slice;
   class WriteBatch;
 }
+
 
 class OpenWorker : public Napi::AsyncWorker
 {
@@ -63,7 +64,7 @@ private:
 class GetWorker : public Napi::AsyncWorker
 {
 public:
-  GetWorker(const Napi::Function& fn, leveldb::DB& db, std::vector<leveldb::Slice>&& slices):
+  GetWorker(const Napi::Function& fn, leveldb::DB& db, std::vector<Slice>&& slices):
     Napi::AsyncWorker(fn),
     db(db),
     keys(std::move(slices)),
@@ -76,7 +77,7 @@ public:
 private:
   leveldb::DB& db;
   leveldb::ReadOptions options;
-  std::vector<leveldb::Slice> keys;
+  std::vector<Slice> keys;
   std::vector<std::string> values;
   std::vector<unsigned int> missing;
 };

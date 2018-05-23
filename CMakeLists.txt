@@ -15,6 +15,7 @@ target_sources(${PROJECT_NAME}
   PRIVATE
     "${PROJECT_SOURCE_DIR}/src/poziomka.cc"
     "${PROJECT_SOURCE_DIR}/src/poziomka.h"
+    "${PROJECT_SOURCE_DIR}/src/slice.h"
     "${PROJECT_SOURCE_DIR}/src/workers.cc"
     "${PROJECT_SOURCE_DIR}/src/workers.h"
 )

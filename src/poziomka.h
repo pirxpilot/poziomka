@@ -4,7 +4,6 @@
 #include <string>
 
 #include <napi.h>
-
 #include <leveldb/db.h>
 
 class Poziomka : public Napi::ObjectWrap<Poziomka>

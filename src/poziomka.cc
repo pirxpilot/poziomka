@@ -1,15 +1,9 @@
 #include <leveldb/write_batch.h>
 
-#include "poziomka.h"
-
+#include "slice.h"
 #include "workers.h"
 
-static inline leveldb::Slice MakeSlice(Napi::Value from) {
-  if (from.IsNull() || from.IsUndefined()) return leveldb::Slice();
-
-  auto buffer = from.As<Napi::Buffer<char>>();
-  return leveldb::Slice(buffer.Data(), buffer.Length());
-}
+#include "poziomka.h"
 
 Poziomka::Poziomka(const Napi::CallbackInfo& info) : ObjectWrap(info) {
   auto env = info.Env();
@@ -48,12 +42,11 @@ void Poziomka::GetMany(const Napi::CallbackInfo& info) {
 
   const auto len = keys.Length();
 
-  std::vector<leveldb::Slice> slices;
+  std::vector<Slice> slices;
   slices.reserve(len);
 
   for(auto i = 0; i < len; i++) {
-    auto key = MakeSlice(keys.Get(i));
-    slices.push_back(key);
+    slices.emplace_back(keys.Get(i));
   }
 
   (new GetWorker(fn, *db, std::move(slices)))->Queue();
@@ -68,10 +61,7 @@ void Poziomka::PutMany(const Napi::CallbackInfo& info) {
 
   const auto len = keys.Length();
   for (auto i = 0; i < len; i++) {
-    auto key = MakeSlice(keys.Get(i));
-    auto value = MakeSlice(values.Get(i));
-
-    batch->Put(key, value);
+    batch->Put(Slice{ keys.Get(i) }, Slice{ values.Get(i) });
   }
 
   (new BatchWorker(fn, *db, batch))->Queue();
@@ -85,9 +75,7 @@ void Poziomka::RemoveMany(const Napi::CallbackInfo& info) {
 
   const auto len = keys.Length();
   for (auto i = 0; i < len; i++) {
-    auto key = MakeSlice(keys.Get(i));
-
-    batch->Delete(key);
+    batch->Delete(Slice{ keys.Get(i) });
   }
 
   (new BatchWorker(fn, *db, batch))->Queue();
