@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
-set(DEPS_COMPILE_FLAGS "-fPIC -fno-builtin-memcmp")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(DEPS_COMPILE_FLAGS "-fno-builtin-memcmp")
 
 add_library(${PROJECT_NAME} SHARED)
 
