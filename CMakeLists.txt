@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  add_definitions(-fno-builtin-memcmp)
+endif()
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(DEPS_COMPILE_FLAGS "-fno-builtin-memcmp")
 
 add_library(${PROJECT_NAME} SHARED)
 
@@ -39,10 +42,6 @@ set(HAVE_CRC32C ON CACHE BOOL "CRC32C is build here")
 
 add_subdirectory(deps/crc32c)
 
-set_target_properties(crc32c PROPERTIES COMPILE_FLAGS ${DEPS_COMPILE_FLAGS})
-set_target_properties(crc32c_sse42 PROPERTIES COMPILE_FLAGS ${DEPS_COMPILE_FLAGS})
-set_target_properties(crc32c_arm64 PROPERTIES COMPILE_FLAGS ${DEPS_COMPILE_FLAGS})
-
 include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/deps/crc32c/include")
 target_link_libraries(${PROJECT_NAME} crc32c)
 
@@ -53,8 +52,6 @@ set(SNAPPY_BUILD_TESTS CACHE BOOL "Don not Build Snappy's own tests.")
 set(HAVE_SNAPPY ON CACHE BOOL "snappy is build also")
 
 add_subdirectory(deps/snappy)
-
-set_target_properties(snappy PROPERTIES COMPILE_FLAGS ${DEPS_COMPILE_FLAGS})
 
 include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/deps/snappy")
 target_link_libraries(${PROJECT_NAME} snappy)
@@ -67,5 +64,4 @@ set(LEVELDB_INSTALL OFF CACHE BOOL "do not install")
 
 add_subdirectory(deps/leveldb)
 
-set_target_properties(leveldb PROPERTIES COMPILE_FLAGS ${DEPS_COMPILE_FLAGS})
 target_link_libraries(${PROJECT_NAME} leveldb)
