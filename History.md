@@ -1,4 +1,13 @@
 
+0.0.6 / 2019-05-04
+==================
+
+ * upgrade leveldb to 1.22
+ * update snappy to latest version 2019-02
+ * update crc32 to 1.0.7
+ * upgrade node-addon-api to 1.6.3
+ * upgrade bindings to 1.5.0
+
 0.0.5 / 2018-05-23
 ==================
 
