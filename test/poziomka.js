@@ -1,91 +1,78 @@
-var should = require('should');
+const test = require('tape');
+const { dirSync } = require('tmp');
+
 const Poziomka = require('../');
-const tmp = require('tmp');
 
-describe('poziomka', function () {
-  before(function () {
-    this.location = tmp.dirSync({
-      prefix: 'poziomka-'
-    }).name;
-  });
-
-  it('open and close', function (done) {
-    let db = new Poziomka(this.location);
-    db.open(function(err) {
-      should.not.exist(err);
-      db.close(function(err) {
-        should.not.exist(err);
-        done();
-      });
+test('open and close', function (t) {
+  const { name } = dirSync({ prefix: 'poziomka-' });
+  const db = new Poziomka(name);
+  db.open(function(err) {
+    t.error(err, 'opens without error');
+    db.close(function(err) {
+      t.error(err, 'closes without error');
+      t.end();
     });
-  });
-
-  describe('crud', function() {
-
-    function from(array) {
-      return array.map(x => Buffer.from([x]));
-    }
-
-    before(function(done) {
-      let { name } = tmp.dirSync({
-        prefix: 'poziomka-'
-      });
-
-      this.db = new Poziomka(name);
-      this.db.open(done);
-    });
-
-    after(function(done) {
-      this.db.close(done);
-    });
-
-
-    it('put and get', function (done) {
-      let keys =  from([ 1, 13, 5, 88 ]);
-      let values =  from([ 100, 101, 102, 103 ]);
-
-      let db = this.db;
-
-      db.putMany(keys, values, get);
-
-      function get() {
-        db.getMany(keys, check);
-      }
-
-      function check(err, result) {
-        result.should.eql(values);
-        done(err);
-      }
-    });
-
-
-    it('put, remove, and get', function (done) {
-      let keys =  from([ 1, 13, 5, 88 ]);
-      let values =  from([ 100, 101, 102, 103 ]);
-      let empty = Buffer.alloc(0);
-
-      let db = this.db;
-
-      db.putMany(keys, values, remove);
-
-      function remove() {
-        db.removeMany([ keys[1], keys[2] ], get);
-      }
-
-      function get() {
-        db.getMany(keys, check);
-      }
-
-      function check(err, result, missing) {
-        missing.should.eql([ 1 , 2 ]);
-        result.should.have.length(4);
-        result[0].should.eql(values[0]);
-        result[1].should.eql(empty);
-        result[2].should.eql(empty);
-        result[3].should.eql(values[3]);
-        done(err);
-      }
-    });
-
   });
 });
+
+let db;
+
+test('open', function(t) {
+  const { name } = dirSync({ prefix: 'poziomka-' });
+
+  db = new Poziomka(name);
+  db.open(t.end);
+});
+
+test('put and get', function (t) {
+  let keys =  from([ 1, 13, 5, 88 ]);
+  let values =  from([ 100, 101, 102, 103 ]);
+
+  db.putMany(keys, values, get);
+
+  function get() {
+    db.getMany(keys, check);
+  }
+
+  function check(err, result) {
+    t.error(err);
+    t.same(result, values);
+    t.end();
+  }
+});
+
+test('put, remove, and get', function (t) {
+  let keys =  from([ 1, 13, 5, 88 ]);
+  let values =  from([ 100, 101, 102, 103 ]);
+  let empty = Buffer.alloc(0);
+
+  db.putMany(keys, values, remove);
+
+  function remove() {
+    db.removeMany([ keys[1], keys[2] ], get);
+  }
+
+  function get() {
+    db.getMany(keys, check);
+  }
+
+  function check(err, result, missing) {
+    t.error(err);
+    t.same(missing, [ 1 , 2 ]);
+    t.equal(result.length, 4);
+    t.same(result[0], values[0]);
+    t.same(result[1], empty);
+    t.same(result[2], empty);
+    t.same(result[3], values[3]);
+    t.end();
+  }
+});
+
+test('close', function(t) {
+  db.close(t.end);
+  db = undefined;
+});
+
+function from(array) {
+  return array.map(x => Buffer.from([x]));
+}

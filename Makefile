@@ -9,7 +9,7 @@ lint:
 	./node_modules/.bin/jshint *.js test
 
 test: addon
-	./node_modules/.bin/mocha --recursive --require should
+	./node_modules/.bin/tape test/*.js | ./node_modules/.bin/tap-dot
 
 $(ADDON): $(CC_SRC) CMakeLists.txt
 	./node_modules/.bin/cmake-js build
@@ -17,7 +17,7 @@ $(ADDON): $(CC_SRC) CMakeLists.txt
 addon: $(ADDON)
 
 prebuild:
-	prebuild --backend cmake-js -t 8.11.2 -t 10.0.0 --strip
+	prebuild --backend cmake-js -t 8.11.2 -t 10.0.0 -t 12.0.0 --strip
 
 clean:
 	rm -rf build
