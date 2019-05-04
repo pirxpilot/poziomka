@@ -24,9 +24,9 @@
   },
   "devDependencies": {
     "jshint": "~2",
-    "mocha": "~5",
-    "should": "~13",
-    "tmp": "^0.0.33"
+    "tap-dot": "^2.0.0",
+    "tape": "~4",
+    "tmp": "~0"
   },
   "scripts": {
     "install": "prebuild-install || cmake-js build",
