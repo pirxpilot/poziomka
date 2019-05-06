@@ -1,4 +1,11 @@
 
+0.0.7 / 2019-05-05
+==================
+
+ * upgrade cmake-js to 4.2.0
+ * switch to building/installing napi binary
+ * upgrade prebuild install to ~5
+
 0.0.6 / 2019-05-04
 ==================
 
