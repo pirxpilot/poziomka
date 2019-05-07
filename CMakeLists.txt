@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
+
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
@@ -9,9 +11,7 @@ endif()
 
 add_definitions(-DNAPI_VERSION=${NAPI_VERSION})
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-add_library(${PROJECT_NAME} SHARED)
+add_library(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
   PRIVATE
