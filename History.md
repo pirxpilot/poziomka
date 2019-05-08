@@ -1,4 +1,10 @@
 
+0.0.8 / 2019-05-07
+==================
+
+ * update cmake-js
+ * build shared libraries by default
+
 0.0.7 / 2019-05-05
 ==================
 
