@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(BUILD_SHARED_LIBS ON CACHE BOOL "Build shared libraries")
-
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
@@ -11,7 +9,9 @@ endif()
 
 add_definitions(-DNAPI_VERSION=${NAPI_VERSION})
 
-add_library(${PROJECT_NAME})
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+add_library(${PROJECT_NAME} SHARED)
 
 target_sources(${PROJECT_NAME}
   PRIVATE
@@ -47,6 +47,10 @@ add_subdirectory(deps/crc32c)
 
 include_directories(SYSTEM "${PROJECT_SOURCE_DIR}/deps/crc32c/include")
 target_link_libraries(${PROJECT_NAME} crc32c)
+
+# crc32c CMake messes up with PROPERTY POSITION_INDEPENDENT_CODE status
+set_property(TARGET crc32c_sse42 PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET crc32c_arm64 PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # snappy
 
