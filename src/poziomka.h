@@ -15,12 +15,9 @@ public:
   friend class CloseWorker;
 
 private:
-  Poziomka(std::string location): location(location) {
-    options.create_if_missing = true;
-    options.block_size =  32 * 1024 * 1024;
-    options.write_buffer_size = 32 * 1024 * 1024;
-    options.max_file_size = 8 * 1024 * 1024;
-  }
+  Poziomka(std::string location, leveldb::Options options):
+    location(location),
+    options(options) {};
 
   static void New(const Nan::FunctionCallbackInfo<v8::Value>&);
   static void Open(const Nan::FunctionCallbackInfo<v8::Value>&);

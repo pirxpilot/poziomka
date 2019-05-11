@@ -1,3 +1,5 @@
+#include <leveldb/cache.h>
+#include <leveldb/filter_policy.h>
 #include <leveldb/write_batch.h>
 
 #include "slice.h"
@@ -5,24 +7,62 @@
 
 #include "poziomka.h"
 
+template<typename T> T GetOptionValue(v8::Local<v8::Object> o, const char* prop, T def) {
+  auto key = Nan::New("maxFileSize").ToLocalChecked();
+
+  if (!Nan::Has(o, key).FromJust()) {
+    return def;
+  }
+
+  auto value = Nan::Get(o, key).ToLocalChecked();
+  return Nan::To<T>(value).FromJust();
+}
+
 Nan::Persistent<v8::Function> Poziomka::constructor;
 
 void Poziomka::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  if (info.Length() < 1) {
+  if (!info.IsConstructCall()) {
+    Nan::ThrowTypeError("Use `new` to call the constructor");
+    return;
+  }
+
+  const auto argc = info.Length();
+
+  if (argc < 1) {
     Nan::ThrowTypeError("Wrong number of arguments");
     return;
   }
 
-  if (!info.IsConstructCall()) {
-    // Invoked as plain function `MyObject(...)`, turn into construct call.
-    auto cons = Nan::New<v8::Function>(constructor);
-    v8::Local<v8::Value> argv[] = { info[0] };
-    info.GetReturnValue().Set(Nan::NewInstance(cons, 1, argv).ToLocalChecked());
-    return;
+  auto str = new Nan::Utf8String(info[0]);
+
+  leveldb::Options options;
+
+  auto o = argc > 1 ?
+    Nan::To<v8::Object>(info[1]).ToLocalChecked() :
+    Nan::New<v8::Object>();
+
+  options.create_if_missing = GetOptionValue(o, "createIfMissing", true);
+  options.error_if_exists = GetOptionValue(o, "errorIfExists", false);
+  options.write_buffer_size = GetOptionValue(o, "writeBufferSize", 32 * 1024 * 1024);
+  options.max_file_size = GetOptionValue(o, "maxFileSize", 8 * 1024 * 1024);
+  options.block_size = GetOptionValue<uint32_t>(o, "blockSize", 4096);
+
+  const auto block_cache_size = GetOptionValue<uint32_t>(o, "cacheSize", 0);
+  if (block_cache_size > 0) {
+    options.block_cache = leveldb::NewLRUCache(block_cache_size);
   }
 
-  auto str = new Nan::Utf8String(info[0]);
-  Poziomka* obj = new Poziomka(**str);
+  const auto compression = GetOptionValue(o, "compression", true);
+  if (!compression) {
+    options.compression = leveldb::kNoCompression;
+  }
+
+  const auto bits_per_key = GetOptionValue<uint32_t>(o, "bitsPerKey", 0);
+  if (bits_per_key > 0) {
+    options.filter_policy = leveldb::NewBloomFilterPolicy(10);
+  }
+
+  Poziomka* obj = new Poziomka(**str, options);
 
   obj->Wrap(info.This());
   info.GetReturnValue().Set(info.This());
