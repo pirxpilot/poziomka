@@ -8,7 +8,7 @@
 
 void OpenWorker::Execute() {
   auto status = poziomka.OpenDatabase();
-  if (!status.ok()) SetError(status.ToString());
+  if (!status.ok()) SetErrorMessage(status.ToString().c_str());
 }
 
 void CloseWorker::Execute() {
@@ -17,7 +17,7 @@ void CloseWorker::Execute() {
 
 void BatchWorker::Execute() {
   auto status = db.Write(options, batch.get());
-  if (!status.ok()) SetError(status.ToString());
+  if (!status.ok()) SetErrorMessage(status.ToString().c_str());
 }
 
 void GetWorker::Execute() {
@@ -29,30 +29,33 @@ void GetWorker::Execute() {
       continue;
     }
     // not OK...
-    SetError(status.ToString());
+    SetErrorMessage(status.ToString().c_str());
     break;
   }
 }
 
-void GetWorker::OnOK() {
-  auto env = Env();
+void GetWorker::HandleOKCallback() {
+  Nan::HandleScope scope;
 
-  auto results = Napi::Array::New(env, values.size());
+  auto results = Nan::New<v8::Array>(values.size());
   for (int i = 0; i < values.size(); i++) {
     auto value = values[i];
-    auto buffer = Napi::Buffer<char>::Copy(env, value.data(), value.size());
-    results.Set(i, buffer);
+    // FIXME: or is it Nan::NewBuffer ???
+    auto buffer = Nan::CopyBuffer(value.data(), value.size());
+    Nan::Set(results, i, buffer.ToLocalChecked());
   }
 
   if (missing.size() == 0) {
-    Callback().MakeCallback(Receiver().Value(), { env.Null(), results });
+    v8::Local<v8::Value> argv[] = { Nan::Null(), results };
+    callback->Call(2, argv, async_resource);
   } else {
 
-    auto orphans = Napi::Array::New(env, missing.size());
+    auto orphans = Nan::New<v8::Array>(missing.size());
     for (int i = 0; i < missing.size(); i++) {
-      orphans.Set(i, Napi::Number::New(env, missing[i]));
+      Nan::Set(orphans, i, Nan::New(missing[i]));
     }
 
-    Callback().MakeCallback(Receiver().Value(), { env.Null(), results, orphans });
+    v8::Local<v8::Value> argv[] = { Nan::Null(), results, orphans };
+    callback->Call(3, argv, async_resource);
   }
 }

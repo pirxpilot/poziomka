@@ -7,8 +7,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_definitions(-fno-builtin-memcmp)
 endif()
 
-add_definitions(-DNAPI_VERSION=${NAPI_VERSION})
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_library(${PROJECT_NAME} SHARED)

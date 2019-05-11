@@ -1,14 +1,14 @@
 #pragma once
 
-#include <napi.h>
+#include <nan.h>
 #include <leveldb/slice.h>
 
 struct Slice: public leveldb::Slice {
-  explicit Slice(Napi::Buffer<char> buffer):
-    leveldb::Slice(buffer.Data(), buffer.Length())
+  explicit Slice(v8::Local<v8::Object> o):
+    leveldb::Slice(node::Buffer::Data(o), node::Buffer::Length(o))
     {}
 
-  explicit Slice(Napi::Value from):
-    Slice(from.As<Napi::Buffer<char>>())
+  explicit Slice(v8::Local<v8::Value> from):
+    Slice(Nan::To<v8::Object>(from).ToLocalChecked())
     {}
 };

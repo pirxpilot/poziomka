@@ -17,7 +17,7 @@ $(ADDON): $(CC_SRC) CMakeLists.txt
 addon: $(ADDON)
 
 prebuild:
-	prebuild --backend cmake-js --runtime napi --strip
+	prebuild --backend cmake-js --runtime node --strip
 
 clean:
 	rm -rf build

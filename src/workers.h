@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <napi.h>
+#include <nan.h>
 #include <leveldb/options.h>
 
 class Poziomka;
@@ -15,11 +15,11 @@ namespace leveldb {
 }
 
 
-class OpenWorker : public Napi::AsyncWorker
+class OpenWorker : public Nan::AsyncWorker
 {
 public:
-  OpenWorker(const Napi::Function& fn, Poziomka& poziomka):
-    Napi::AsyncWorker(fn),
+  OpenWorker(Nan::Callback* fn, Poziomka& poziomka):
+    Nan::AsyncWorker(fn, "open"),
     poziomka(poziomka)
     {}
 
@@ -30,11 +30,11 @@ private:
 };
 
 
-class CloseWorker : public Napi::AsyncWorker
+class CloseWorker : public Nan::AsyncWorker
 {
 public:
-  CloseWorker(const Napi::Function& fn, Poziomka& poziomka):
-    Napi::AsyncWorker(fn),
+  CloseWorker(Nan::Callback* fn, Poziomka& poziomka):
+    Nan::AsyncWorker(fn, "close"),
     poziomka(poziomka)
     {}
 
@@ -44,11 +44,11 @@ private:
   Poziomka& poziomka;
 };
 
-class BatchWorker : public Napi::AsyncWorker
+class BatchWorker : public Nan::AsyncWorker
 {
 public:
-  BatchWorker(const Napi::Function& fn, leveldb::DB& db, leveldb::WriteBatch* batch):
-    Napi::AsyncWorker(fn),
+  BatchWorker(Nan::Callback* fn, leveldb::DB& db, leveldb::WriteBatch* batch):
+    Nan::AsyncWorker(fn, "batch"),
     db(db),
     batch(batch)
     {}
@@ -61,18 +61,18 @@ private:
   std::unique_ptr<leveldb::WriteBatch> batch;
 };
 
-class GetWorker : public Napi::AsyncWorker
+class GetWorker : public Nan::AsyncWorker
 {
 public:
-  GetWorker(const Napi::Function& fn, leveldb::DB& db, std::vector<Slice>&& slices):
-    Napi::AsyncWorker(fn),
+  GetWorker(Nan::Callback* fn, leveldb::DB& db, std::vector<Slice>&& slices):
+    Nan::AsyncWorker(fn, "get"),
     db(db),
     keys(std::move(slices)),
     values(keys.size())
     {}
 
   void Execute() override;
-  void OnOK() override;
+  void HandleOKCallback() override;
 
 private:
   leveldb::DB& db;
