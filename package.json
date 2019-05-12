@@ -19,7 +19,7 @@
   "dependencies": {
     "@pirxpilot/cmake-js": "~5",
     "bindings": "^1.5.0",
-    "node-addon-api": "^1.6.3",
+    "nan": "^2.13.2",
     "prebuild-install": "~5"
   },
   "devDependencies": {
@@ -29,7 +29,7 @@
     "tmp": "~0"
   },
   "scripts": {
-    "install": "prebuild-install --runtime napi || cmake-js build",
+    "install": "prebuild-install || cmake-js build",
     "prebuild": "make prebuild",
     "test": "make check"
   },
@@ -38,15 +38,5 @@
     "CMakeLists.txt",
     "src",
     "deps"
-  ],
-  "binary": {
-    "napi_versions": [
-      2,
-      3,
-      4
-    ]
-  },
-  "cmake-js": {
-    "runtime": "napi"
-  }
+  ]
 }
