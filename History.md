@@ -1,4 +1,11 @@
 
+0.0.9 / 2019-05-11
+==================
+
+ * add support for various leveldb options
+ * rewrite using NaN to compare performance vs. N-API implementation
+ * fix Travis builds by forcing PIC in crc32c
+
 0.0.8 / 2019-05-07
 ==================
 
