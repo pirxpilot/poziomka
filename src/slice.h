@@ -8,7 +8,8 @@ struct Slice: public leveldb::Slice {
     leveldb::Slice(node::Buffer::Data(o), node::Buffer::Length(o))
     {}
 
-  explicit Slice(v8::Local<v8::Value> from):
-    Slice(Nan::To<v8::Object>(from).ToLocalChecked())
+  explicit Slice(Nan::MaybeLocal<v8::Value> from):
+    Slice(Nan::To<v8::Object>(from.ToLocalChecked()).ToLocalChecked())
     {}
+
 };

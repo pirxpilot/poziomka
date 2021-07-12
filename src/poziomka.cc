@@ -87,6 +87,7 @@ void Poziomka::Close(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 }
 
 void Poziomka::GetMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  auto context = info.GetIsolate()->GetCurrentContext();
   auto keys = info[0].As<v8::Array>();
   auto fn = new Nan::Callback(info[1].As<v8::Function>());
 
@@ -96,7 +97,7 @@ void Poziomka::GetMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   slices.reserve(len);
 
   for(auto i = 0; i < len; i++) {
-    slices.emplace_back(keys->Get(i));
+    slices.emplace_back(keys->Get(context, i));
   }
 
   Poziomka* poziomka = ObjectWrap::Unwrap<Poziomka>(info.Holder());
@@ -105,6 +106,7 @@ void Poziomka::GetMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 }
 
 void Poziomka::PutMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  auto context = info.GetIsolate()->GetCurrentContext();
   auto keys = info[0].As<v8::Array>();
   auto values = info[1].As<v8::Array>();
   auto fn = new Nan::Callback(info[2].As<v8::Function>());
@@ -113,7 +115,7 @@ void Poziomka::PutMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
   const auto len = keys->Length();
   for (auto i = 0; i < len; i++) {
-    batch->Put(Slice{ keys->Get(i) }, Slice{ values->Get(i) });
+    batch->Put(Slice{ keys->Get(context, i) }, Slice{ values->Get(context, i) });
   }
 
   Poziomka* poziomka = ObjectWrap::Unwrap<Poziomka>(info.Holder());
@@ -122,6 +124,7 @@ void Poziomka::PutMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 }
 
 void Poziomka::RemoveMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
+  auto context = info.GetIsolate()->GetCurrentContext();
   auto keys = info[0].As<v8::Array>();
   auto fn = new Nan::Callback(info[1].As<v8::Function>());
 
@@ -129,7 +132,7 @@ void Poziomka::RemoveMany(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
   const auto len = keys->Length();
   for (auto i = 0; i < len; i++) {
-    batch->Delete(Slice{ keys->Get(i) });
+    batch->Delete(Slice{ keys->Get(context, i) });
   }
 
   Poziomka* poziomka = ObjectWrap::Unwrap<Poziomka>(info.Holder());

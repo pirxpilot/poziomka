@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 # Name of the project (will be the name of the plugin)
 project(poziomka)
 
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_definitions(-fno-builtin-memcmp)
 endif()
@@ -22,6 +23,8 @@ target_sources(${PROJECT_NAME}
 
 # Gives our library file a .node extension without any "lib" prefix
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
 
 # Essential include files to build a node addon,
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
