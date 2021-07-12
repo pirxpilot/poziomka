@@ -1,4 +1,11 @@
 
+1.0.0 / 2021-07-12
+==================
+
+ * upgrade prebuild-install to ~6
+ * fix for node >= 13
+ * set C++ standard to 14
+
 0.0.9 / 2019-05-11
 ==================
 
