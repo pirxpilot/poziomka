@@ -1,4 +1,12 @@
 
+1.0.1 / 2021-07-13
+==================
+
+ * upgrade tape to ~5
+ * update crc32c to 1.1.1
+ * update snappy to 1.1.7
+ * update leveldb to 1.23
+
 1.0.0 / 2021-07-12
 ==================
 
