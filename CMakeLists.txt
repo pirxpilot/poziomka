@@ -24,7 +24,7 @@ target_sources(${PROJECT_NAME}
 # Gives our library file a .node extension without any "lib" prefix
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Essential include files to build a node addon,
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
