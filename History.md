@@ -1,4 +1,12 @@
 
+1.0.2 / 2023-06-10
+==================
+
+ * upgrade snappy to 1.1.8
+ * upgrade crc32c to 1.1.2
+ * upgrade prebuild-install to ~7
+ * target C++ version 17
+
 1.0.1 / 2021-07-13
 ==================
 
