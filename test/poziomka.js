@@ -1,76 +1,78 @@
-const test = require('tape');
+const test = require('node:test');
 const { dirSync } = require('tmp');
 
-const Poziomka = require('../');
+const Poziomka = require('..');
 
-test('open and close', t => {
+test('open and close', (t, done) => {
   const { name } = dirSync({ prefix: 'poziomka-' });
   const db = new Poziomka(name);
   db.open(err => {
-    t.error(err, 'opens without error');
+    t.assert.ifError(err, 'opens without error');
     db.close(err => {
-      t.error(err, 'closes without error');
-      t.end();
+      t.assert.ifError(err, 'closes without error');
+      done();
     });
   });
 });
 
-let db;
+test('crud', async t => {
+  let db;
 
-test('open', t => {
-  const { name } = dirSync({ prefix: 'poziomka-' });
+  t.before((_, done) => {
+    const { name } = dirSync({ prefix: 'poziomka-' });
 
-  db = new Poziomka(name);
-  db.open(t.end);
-});
+    db = new Poziomka(name);
+    db.open(done);
+  });
 
-test('put and get', t => {
-  const keys = from([1, 13, 5, 88]);
-  const values = from([100, 101, 102, 103]);
+  t.after((_, done) => {
+    db.close(done);
+    db = undefined;
+  });
 
-  db.putMany(keys, values, get);
+  await t.test('put and get', (t, done) => {
+    const keys = from([1, 13, 5, 88]);
+    const values = from([100, 101, 102, 103]);
 
-  function get() {
-    db.getMany(keys, check);
-  }
+    db.putMany(keys, values, get);
 
-  function check(err, result) {
-    t.error(err);
-    t.same(result, values);
-    t.end();
-  }
-});
+    function get() {
+      db.getMany(keys, check);
+    }
 
-test('put, remove, and get', t => {
-  const keys = from([1, 13, 5, 88]);
-  const values = from([100, 101, 102, 103]);
-  const empty = Buffer.alloc(0);
+    function check(err, result) {
+      t.assert.ifError(err);
+      t.assert.deepEqual(result, values);
+      done();
+    }
+  });
 
-  db.putMany(keys, values, remove);
+  await t.test('put, remove, and get', (t, done) => {
+    const keys = from([1, 13, 5, 88]);
+    const values = from([100, 101, 102, 103]);
+    const empty = Buffer.alloc(0);
 
-  function remove() {
-    db.removeMany([keys[1], keys[2]], get);
-  }
+    db.putMany(keys, values, remove);
 
-  function get() {
-    db.getMany(keys, check);
-  }
+    function remove() {
+      db.removeMany([keys[1], keys[2]], get);
+    }
 
-  function check(err, result, missing) {
-    t.error(err);
-    t.same(missing, [1, 2]);
-    t.equal(result.length, 4);
-    t.same(result[0], values[0]);
-    t.same(result[1], empty);
-    t.same(result[2], empty);
-    t.same(result[3], values[3]);
-    t.end();
-  }
-});
+    function get() {
+      db.getMany(keys, check);
+    }
 
-test('close', t => {
-  db.close(t.end);
-  db = undefined;
+    function check(err, result, missing) {
+      t.assert.ifError(err);
+      t.assert.deepEqual(missing, [1, 2]);
+      t.assert.equal(result.length, 4);
+      t.assert.deepEqual(result[0], values[0]);
+      t.assert.deepEqual(result[1], empty);
+      t.assert.deepEqual(result[2], empty);
+      t.assert.deepEqual(result[3], values[3]);
+      done();
+    }
+  });
 });
 
 function from(array) {
