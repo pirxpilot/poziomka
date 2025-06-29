@@ -2,6 +2,7 @@
   "name": "poziomka",
   "version": "1.1.0",
   "description": "Fast and opinionated leveldb interface.",
+  "type": "commonjs",
   "author": {
     "name": "Damian Krzeminski",
     "email": "pirxpilot@furkot.com",
@@ -23,9 +24,7 @@
     "prebuild-install": "~7"
   },
   "devDependencies": {
-    "jshint": "~2",
-    "tap-dot": "^2.0.0",
-    "tape": "~5",
+    "@biomejs/biome": "2.0.5",
     "tmp": "~0"
   },
   "scripts": {
