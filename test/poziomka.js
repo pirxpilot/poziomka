@@ -3,12 +3,12 @@ const { dirSync } = require('tmp');
 
 const Poziomka = require('../');
 
-test('open and close', function (t) {
+test('open and close', t => {
   const { name } = dirSync({ prefix: 'poziomka-' });
   const db = new Poziomka(name);
-  db.open(function(err) {
+  db.open(err => {
     t.error(err, 'opens without error');
-    db.close(function(err) {
+    db.close(err => {
       t.error(err, 'closes without error');
       t.end();
     });
@@ -17,16 +17,16 @@ test('open and close', function (t) {
 
 let db;
 
-test('open', function(t) {
+test('open', t => {
   const { name } = dirSync({ prefix: 'poziomka-' });
 
   db = new Poziomka(name);
   db.open(t.end);
 });
 
-test('put and get', function (t) {
-  let keys =  from([ 1, 13, 5, 88 ]);
-  let values =  from([ 100, 101, 102, 103 ]);
+test('put and get', t => {
+  const keys = from([1, 13, 5, 88]);
+  const values = from([100, 101, 102, 103]);
 
   db.putMany(keys, values, get);
 
@@ -41,15 +41,15 @@ test('put and get', function (t) {
   }
 });
 
-test('put, remove, and get', function (t) {
-  let keys =  from([ 1, 13, 5, 88 ]);
-  let values =  from([ 100, 101, 102, 103 ]);
-  let empty = Buffer.alloc(0);
+test('put, remove, and get', t => {
+  const keys = from([1, 13, 5, 88]);
+  const values = from([100, 101, 102, 103]);
+  const empty = Buffer.alloc(0);
 
   db.putMany(keys, values, remove);
 
   function remove() {
-    db.removeMany([ keys[1], keys[2] ], get);
+    db.removeMany([keys[1], keys[2]], get);
   }
 
   function get() {
@@ -58,7 +58,7 @@ test('put, remove, and get', function (t) {
 
   function check(err, result, missing) {
     t.error(err);
-    t.same(missing, [ 1 , 2 ]);
+    t.same(missing, [1, 2]);
     t.equal(result.length, 4);
     t.same(result[0], values[0]);
     t.same(result[1], empty);
@@ -68,7 +68,7 @@ test('put, remove, and get', function (t) {
   }
 });
 
-test('close', function(t) {
+test('close', t => {
   db.close(t.end);
   db = undefined;
 });

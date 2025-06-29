@@ -23,7 +23,7 @@
     "prebuild-install": "~7"
   },
   "devDependencies": {
-    "jshint": "~2",
+    "@biomejs/biome": "2.0.5",
     "tap-dot": "^2.0.0",
     "tape": "~5",
     "tmp": "~0"

@@ -6,10 +6,13 @@ CC_SRC=$(wildcard src/*.h src/*.cc)
 check: lint test
 
 lint:
-	./node_modules/.bin/jshint *.js test
+	./node_modules/.bin/biome ci
+
+format:
+	./node_modules/.bin/biome check --fix
 
 test: addon
-	./node_modules/.bin/tape test/*.js | ./node_modules/.bin/tap-dot
+	node --test
 
 $(ADDON): $(CC_SRC) CMakeLists.txt
 	./node_modules/.bin/cmake-js build --CDCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -22,4 +25,4 @@ prebuild:
 clean:
 	rm -rf build
 
-.PHONY: check lint test addon clean prebuild
+.PHONY: check format lint test addon clean prebuild
