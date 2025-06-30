@@ -1,7 +1,6 @@
 [![NPM version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
+[![Build Status][build-image]][build-url]
 [![Dependency Status][deps-image]][deps-url]
-[![Dev Dependency Status][deps-dev-image]][deps-dev-url]
 
 # poziomka
 
@@ -63,16 +62,14 @@ db.removeMany(keys, function(err) {
 
 MIT © [Damian Krzeminski](https://pirxpilot.me)
 
-[npm-image]: https://img.shields.io/npm/v/poziomka.svg
+[npm-image]: https://img.shields.io/npm/v/poziomka
 [npm-url]: https://npmjs.org/package/poziomka
 
-[travis-url]: https://travis-ci.org/pirxpilot/poziomka
-[travis-image]: https://img.shields.io/travis/pirxpilot/poziomka.svg
+[build-url]: https://github.com/pirxpilot/poziomka/actions/workflows/check.yaml
+[build-image]: https://img.shields.io/github/actions/workflow/status/pirxpilot/poziomka/check.yaml?branch=main
 
-[deps-image]: https://img.shields.io/david/pirxpilot/poziomka.svg
-[deps-url]: https://david-dm.org/pirxpilot/poziomka
+[deps-image]: https://img.shields.io/librariesio/release/npm/poziomka
+[deps-url]: https://libraries.io/npm/poziomka
 
-[deps-dev-image]: https://img.shields.io/david/dev/pirxpilot/poziomka.svg
-[deps-dev-url]: https://david-dm.org/pirxpilot/poziomka?type=dev
 
 [level]: https://npmjs.org/package/level
