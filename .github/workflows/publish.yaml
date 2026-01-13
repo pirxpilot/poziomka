@@ -1,23 +1,28 @@
-name: check
+name: publish
+
 on:
   push:
-    tags-ignore:
+    tags:
       - '[0-9]+.[0-9]+.[0-9]+'
-    branches:
-      - '**'
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24, 22]
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: true
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
+
+      # Ensure npm 11.5.1 or later is installed
+      - name: update npm
+        run: npm install -g npm@latest
       - run: npm install --ignore-scripts
       - run: make check
+      - run: npm publish
