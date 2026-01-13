@@ -4,9 +4,9 @@
 
 #include <nan.h>
 #include <leveldb/options.h>
+#include "slice.h"
 
 class Poziomka;
-class Slice;
 
 namespace leveldb {
   class DB;
