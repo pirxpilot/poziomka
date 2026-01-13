@@ -1,4 +1,15 @@
 
+1.2.0 / 2026-01-13
+==================
+
+ * add promised based API
+ * fix forward declaration of slice
+ * set C++ standard to 20
+ * upgrade nan to 2.23.0
+ * replace Travis CI with github actions
+ * replace `tap` with `node:test`
+ * use `biome` as a linter and formatter
+
 1.1.0 / 2025-06-28
 ==================
 
