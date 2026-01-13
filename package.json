@@ -3,6 +3,10 @@
   "version": "1.1.0",
   "description": "Fast and opinionated leveldb interface.",
   "type": "commonjs",
+  "exports": {
+    ".": "./index.js",
+    "./promises": "./lib/promises.js"
+  },
   "author": {
     "name": "Damian Krzeminski",
     "email": "pirxpilot@furkot.com",
@@ -34,6 +38,7 @@
   },
   "files": [
     "index.js",
+    "lib",
     "CMakeLists.txt",
     "src",
     "deps"
